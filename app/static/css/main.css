@@ -1,0 +1,20 @@
+*,*:before,*::after{
+    padding: 0;
+    margin: 0;
+    box-sizing: inherit;
+}
+
+body {
+    padding-top: 30px;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: 650;
+    margin-bottom: 300px;
+    padding: 20px;
+    background: linear-gradient(rgba(194, 192, 192, 0.147) 0%, rgba(125, 124, 124, 0.497) 50%, rgba(194, 192, 192, 0.147) 100%); 
+    color: white; 
+    text-align: center;
+    max-width: 40%;
+}
