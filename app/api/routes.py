@@ -65,35 +65,34 @@ def delete_contact(current_user_token, id):
     response = contact_schema.dump(contact)
     return jsonify(response)
 
+
 # Book route
 @api.route('/books', methods=['POST'])
 @token_required
 def create_book(current_user_token):
     try:
-        books_data = request.json  
+        book_data = request.json  
 
-        for book_data in books_data:
-            ISBN = book_data['ISBN']
-            author = book_data['author']  
-            book_title = book_data['book_title']
-            book_length = book_data['book_length']
-            cover_type = book_data['cover_type']
-            user_token = current_user_token.token
+        ISBN = book_data['ISBN']
+        author = book_data['author']
+        book_title = book_data['book_title']
+        book_length = book_data['book_length']
+        cover_type = book_data['cover_type']
+        user_token = current_user_token.token
 
-            print(f'BIG TESTER: {current_user_token.token}')
+        print(f'BIG TESTER: {current_user_token.token}')
 
-            book = Book(ISBN, author, book_title, book_length, cover_type, user_token=user_token)
+        book = Book(ISBN, author, book_title, book_length, cover_type, user_token=user_token)
 
-            db.session.add(book)
-            db.session.commit()
+        db.session.add(book)
+        db.session.commit()
 
-        response = books_schema.dump(Book.query.all())
+        response = book_schema.dump(book)
         return jsonify(response)
+
     except Exception as e:
         print(f"Error creating book: {str(e)}")
-        return jsonify({"error": "Failed to create book"}), 500
-
-
+        return jsonify({"error": f"Failed to create book. Error: {str(e)}"}), 500
 
 @api.route('/books', methods = ['GET'])
 @token_required
