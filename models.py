@@ -79,34 +79,40 @@ class ContactSchema(ma.Schema):
 contact_schema = ContactSchema()
 contacts_schema = ContactSchema(many=True)
 
-class Book(db.Model):
+class Plant(db.Model):
     id = db.Column(db.String, primary_key = True)
-    ISBN = db.Column(db.String(200), nullable = False)
-    author = db.Column(db.String(200), nullable = False)
-    book_title = db.Column(db.String(5))
-    book_length = db.Column(db.String(200))
-    cover_type = db.Column(db.String(200))
+    common_name = db.Column(db.String(250), nullable = False)
+    scientific_name = db.Column(db.String(250), nullable = False)
+    days_to_harvest = db.Column(db.String(50))
+    sowing = db.Column(db.String(300))
+    light = db.Column(db.String(300))
+    row_spacing = db.Column(db.String(50))
+    minimum_root_depth = db.Column(db.String(50))
+    soil_nutriments = db.Column(db.String(300))
     user_token = db.Column(db.String, db.ForeignKey('user.token'), nullable = False)
 
-    def __init__(self,ISBN,author,book_title,book_length,cover_type,user_token, id = ''):
+    def __init__(self,common_name,scientific_name,days_to_harvest,sowing,light,row_spacing,minimum_root_depth,soil_nutriments,user_token, id = ''):
         self.id = self.set_id()
-        self.ISBN = ISBN
-        self.author = author
-        self.book_title = book_title
-        self.book_length = book_length
-        self.cover_type = cover_type
+        self.common_name = common_name
+        self.scientific_name = scientific_name
+        self.days_to_harvest = days_to_harvest
+        self.sowing = sowing
+        self.light = light
+        self.row_spacing = row_spacing
+        self.minimum_root_depth = minimum_root_depth
+        self.soil_nutriments = soil_nutriments
         self.user_token = user_token
 
 
     def __repr__(self):
-        return f'The following book has been added to the inventory: {self.book_title}'
+        return f'The following plant has been added to the inventory: {self.common_name}'
 
     def set_id(self):
         return (secrets.token_urlsafe())
 
-class BookSchema(ma.Schema):
+class PlantSchema(ma.Schema):
     class Meta:
-        fields = ['id', 'ISBN', 'author','book_title','book_length', 'cover_type']
+        fields = ['id', 'common_name', 'scientific_name','days_to_harvest','sowing', 'light', 'row_spacing', 'minimum_root_depth', 'soil_nutriments']
 
-book_schema = BookSchema()
-books_schema = BookSchema(many=True)
+plant_schema = PlantSchema()
+plants_schema = PlantSchema(many=True)

@@ -1,12 +1,12 @@
 from flask import Blueprint, request, jsonify, render_template
 from ..helpers import token_required
-from models import db, User, Contact, book_schema, books_schema, Book
+from models import db, Contact, plant_schema, plants_schema, Plant
 
 api = Blueprint('api',__name__, url_prefix='/api')
 
 @api.route('/getdata')
 def getdata():
-    return {'woot': 'toot'}
+    return {'woot': 'poot'}
 
 @api.route('/contacts', methods = ['POST'])
 @token_required
@@ -66,71 +66,77 @@ def delete_contact(current_user_token, id):
     return jsonify(response)
 
 
-# Book route
-@api.route('/books', methods=['POST'])
+# Plant route
+@api.route('/plants', methods=['POST'])
 @token_required
-def create_book(current_user_token):
+def create_plant(current_user_token):
     try:
-        book_data = request.json  
+        plant_data = request.json  
 
-        ISBN = book_data['ISBN']
-        author = book_data['author']
-        book_title = book_data['book_title']
-        book_length = book_data['book_length']
-        cover_type = book_data['cover_type']
+        common_name = plant_data['common_name']
+        scientific_name = plant_data['scientific_name']
+        days_to_harvest = plant_data['days_to_harvest']
+        sowing = plant_data['sowing']
+        light = plant_data['light']
+        row_spacing = plant_data['row_spacing']
+        minimum_root_depth = plant_data['minimum_root_depth']
+        soil_nutriments = plant_data['soil_nutriments']
         user_token = current_user_token.token
 
         print(f'BIG TESTER: {current_user_token.token}')
 
-        book = Book(ISBN, author, book_title, book_length, cover_type, user_token=user_token)
+        plant = Plant(common_name, scientific_name, days_to_harvest, sowing, light, row_spacing, minimum_root_depth, soil_nutriments, user_token=user_token)
 
-        db.session.add(book)
+        db.session.add(plant)
         db.session.commit()
 
-        response = book_schema.dump(book)
+        response = plant_schema.dump(plant)
         return jsonify(response)
 
     except Exception as e:
-        print(f"Error creating book: {str(e)}")
-        return jsonify({"error": f"Failed to create book. Error: {str(e)}"}), 500
+        print(f"Error creating plant: {str(e)}")
+        return jsonify({"error": f"Failed to create plant. Error: {str(e)}"}), 500
 
-@api.route('/books', methods = ['GET'])
+@api.route('/plants', methods = ['GET'])
 @token_required
-def get_book(current_user_token):
+def get_plant(current_user_token):
     a_user = current_user_token.token
-    books = Book.query.filter_by(user_token = a_user).all()
-    response = books_schema.dump(books)
+    plants = Plant.query.filter_by(user_token = a_user).all()
+    response = plants_schema.dump(plants)
     return jsonify(response)
 
-@api.route('/books/<id>', methods = ['GET'])
+@api.route('/plants/<id>', methods = ['GET'])
 @token_required
-def get_single_book(current_user_token, id):
-    book = Book.query.get(id)
-    response = book_schema.dump(book)
+def get_single_plant(current_user_token, id):
+    plant = Plant.query.get(id)
+    response = plant_schema.dump(plant)
     return jsonify(response)
 
-@api.route('/books/<id>', methods = ['POST','PUT'])
+@api.route('/plants/<id>', methods = ['POST','PUT'])
 @token_required
-def update_book(current_user_token,id):
-    book = Book.query.get(id) 
-    book.ISBN = request.json['ISBN']
-    book.author = request.json['author']
-    book.book_title = request.json['book_title']
-    book.book_length = request.json['book_length']
-    book.cover_type = request.json['cover_type']
-    book.user_token = current_user_token.token
+def update_plant(current_user_token,id):
+    plant = Plant.query.get(id) 
+    plant.common_name = request.json['common_name']
+    plant.scientific_name = request.json['scientific_name']
+    plant.days_to_harvest= request.json['days_to_harvest']
+    plant.sowing = request.json['sowing']
+    plant.light = request.json['light']
+    plant.row_spacing= request.json['row_spacing']
+    plant.minimum_root_depth = request.json['minimum_root_depth']
+    plant.soil_nutriments = request.json['soil_nutriments']
+    plant.user_token = current_user_token.token
 
     db.session.commit()
-    response = book_schema.dump(book)
+    response = plant_schema.dump(plant)
     return jsonify(response)
 
-@api.route('/books/<id>', methods = ['DELETE'])
+@api.route('/plants/<id>', methods = ['DELETE'])
 @token_required
-def delete_book(current_user_token, id):
-    book = Book.query.get(id)
-    db.session.delete(book)
+def delete_plant(current_user_token, id):
+    plant = Plant.query.get(id)
+    db.session.delete(plant)
     db.session.commit()
-    response = book_schema.dump(book)
+    response = plant_schema.dump(plant)
     return jsonify(response)
 
 
